@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Ktor Timestamp Sender</title>
+</head>
+<body>
+<button id="sendBtn">b u z z e r </button>
+
+<script>
+  const ws = new WebSocket("ws://localhost:8080/timestamps");
+
+  ws.onopen = () => {
+    console.log("WebSocket connected");
+
+    document.getElementById("sendBtn").addEventListener("click", () => {
+      const now = performance.timeOrigin + performance.now(); // ms
+      const timestamp_ns = BigInt(Math.floor(now * 1_000_000)); // ns
+
+      ws.send(timestamp_ns.toString());
+      console.log("Send timestamp: " + timestamp_ns)
+    });
+  };
+</script>
+</body>
+</html>
