@@ -26,7 +26,7 @@ fun Application.configureSockets() {
             val clientIp = call.request.origin.remoteHost
             val connectionId = activeConnections.incrementAndGet()
 
-            println("Client connected: IP=$clientIp, ConnectionId=$connectionId, Active connections=${activeConnections.get()}")
+            log.info("Client connected: IP=$clientIp, ConnectionId=$connectionId, Active connections=${activeConnections.get()}")
 
             try {
                 incoming.consumeEach { frame ->
@@ -36,17 +36,19 @@ fun Application.configureSockets() {
                             val json = parseToJsonElement(message).jsonObject
                             json["clientId"]?.jsonPrimitive?.content ?: "unknown"
                         } catch (e: Exception) {
-                            "unknown"
+                            log.error("Couldn't parse JSON.")
+                            log.error("Message: $message")
+                            log.error("Exception: ${e.message}")
                         }
 
-                        println("Received timestamp from clientId=$clientId: $message ns")
+                        log.info("Received timestamp from clientId=$clientId: $message ns")
                     }
                 }
             } catch (e: Exception) {
-                println("WebSocket error (ConnectionId=$connectionId): ${e.localizedMessage}")
+                log.error("WebSocket error (ConnectionId=$connectionId): ${e.localizedMessage}")
             } finally {
                 val currentActive = activeConnections.decrementAndGet()
-                println("Client disconnected: IP=$clientIp, ConnectionId=$connectionId, Active connections=$currentActive")
+                log.info("Client disconnected: IP=$clientIp, ConnectionId=$connectionId, Active connections=$currentActive")
             }
         }
     }

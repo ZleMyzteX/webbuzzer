@@ -15,6 +15,7 @@ import io.ktor.websocket.*
 import io.micrometer.prometheus.*
 import java.io.File
 import java.time.Duration
+import java.time.Instant
 import kotlin.time.Duration.Companion.seconds
 
 fun Application.configureRouting() {
@@ -23,5 +24,8 @@ fun Application.configureRouting() {
             default("index.html")
         }
 
+        get("/api/server-time") {
+            call.respond(mapOf("now" to Instant.now().toEpochMilli()))
+        }
     }
 }

@@ -6,6 +6,25 @@ const sendButton = document.getElementById("buzzer");
 const reconnectButton = document.getElementById("reconnectButton");
 
 let ws = null;
+let serverTimeOffset = 0;
+const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+// Convert UTC timestamp to local time
+function convertToLocalTime(utcTimestamp) {
+  const date = new Date(utcTimestamp);
+  return date.toLocaleString("en-US", {timeZone: userTimeZone});
+}
+
+// Synchronize with server time using /api/server-time
+async function syncServerTime() {
+  const t0 = performance.now();
+  const response = await fetch("/api/server-time");
+  const serverTime = await response.json(); // { now: <ms since epoch> }
+  const t1 = performance.now();
+  const rtt = (t1 - t0) / 2;
+  serverTimeOffset = serverTime.now - (performance.timeOrigin + t0 + rtt);
+  updateStatus("Server time synchronized.");
+}
 
 function generateClientId() {
   return crypto.randomUUID();
@@ -44,7 +63,7 @@ function setupWebSocket() {
   ws = new WebSocket(`ws://${location.host}/timestamps`);
 
   ws.onopen = () => updateStatus("WebSocket connected.");
-  ws.onerror = () => updateStatus("WebSocket error.");
+  ws.onerror = () => updateStatus("WebSocket error. :(");
   ws.onclose = () => updateStatus("WebSocket disconnected.");
 }
 
@@ -55,8 +74,9 @@ function sendTimestamp() {
     return;
   }
 
-  const timestampNs = BigInt(Math.floor((performance.timeOrigin + performance.now()) * 1_000_000));
-  const message = JSON.stringify({ clientId, timestampNs: timestampNs.toString() });
+  const timestampNs = getAccurateTimestampNs();
+  const message = JSON.stringify(
+      {clientId, timestampNs: timestampNs.toString()});
 
   if (ws && ws.readyState === WebSocket.OPEN) {
     ws.send(message);
@@ -66,12 +86,23 @@ function sendTimestamp() {
   }
 }
 
+// Get accurate timestamp in nanoseconds, synchronized to server
+function getAccurateTimestampNs() {
+  return BigInt(
+      Math.floor(performance.timeOrigin + performance.now() + serverTimeOffset)
+      * 1_000_000);
+}
+
+window.addEventListener("DOMContentLoaded", syncServerTime);
 saveButton.addEventListener("click", saveClientId);
 sendButton.addEventListener("click", sendTimestamp);
 reconnectButton.addEventListener("click", () => {
-  if (ws) ws.close();
+  if (ws) {
+    ws.close();
+  }
   updateStatus("Reconnecting...");
   setupWebSocket();
+  syncServerTime();
 });
 
 input.value = loadClientId();

@@ -1,9 +1,10 @@
 package er.codes.web
 
 import io.ktor.server.application.*
+import io.ktor.server.netty.EngineMain.main
 
 fun main(args: Array<String>) {
-    io.ktor.server.netty.EngineMain.main(args)
+    main(args)
 }
 
 fun Application.module() {

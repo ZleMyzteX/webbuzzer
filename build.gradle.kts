@@ -21,9 +21,25 @@ dependencies {
     implementation(libs.micrometer.registry.prometheus)
     implementation(libs.ktor.server.websockets)
     implementation(libs.ktor.server.netty)
+    implementation(libs.kotlinx.serialization.json)
     implementation(libs.logback.classic)
     implementation(libs.ktor.server.config.yaml)
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
+    implementation(libs.exposed.core)
+    implementation(libs.exposed.jdbc)
     testImplementation(libs.ktor.server.test.host)
     testImplementation(libs.kotlin.test.junit)
+}
+
+jib {
+    from {
+        image = "gcr.io/distroless/java21-debian12"
+    }
+    to {
+        image = "localhost:5000/web-buzzer"
+    }
+    container {
+        mainClass = "er.codes.web.ApplicationKt"
+        ports = listOf("8080")
+    }
+    setAllowInsecureRegistries(true)
 }
