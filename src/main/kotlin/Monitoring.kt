@@ -10,16 +10,14 @@ import io.micrometer.prometheus.*
 import java.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
-fun Application.configureMonitoring() {
-    val appMicrometerRegistry = PrometheusMeterRegistry(PrometheusConfig.DEFAULT)
-    
+fun Application.configureMonitoring(prometheusRegistry: PrometheusMeterRegistry) {
     install(MicrometerMetrics) {
-        registry = appMicrometerRegistry
+        registry = prometheusRegistry
         // ...
     }
     routing {
         get("/metrics-micrometer") {
-            call.respond(appMicrometerRegistry.scrape())
+            call.respond(prometheusRegistry.scrape())
         }
     }
 }

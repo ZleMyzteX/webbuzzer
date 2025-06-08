@@ -1,45 +1,109 @@
+html, body {
+  height: 100vh;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+
 body {
   font-family: Arial, sans-serif;
   background: #f4f4f8;
-  padding: 2rem;
-  max-width: 500px;
-  margin: auto;
   color: #333;
+  margin: 0;
+  padding: 1.5rem 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
 }
 
 h2 {
   text-align: center;
   margin-bottom: 2rem;
+  font-size: 2rem;
 }
 
 label {
   display: block;
   margin-bottom: 0.5rem;
   font-weight: bold;
+  text-align: center;
 }
 
-input[type="text"] {
-  width: 100%;
-  padding: 0.5rem;
-  font-size: 1rem;
-  margin-bottom: 1rem;
+#clientIdInput {
+  display: block;
+  margin: 0 auto 2rem auto;
+  max-width: 220px;
+  width: 70vw;
+  padding: 1.1rem;
+  font-size: 1.2rem;
   border: 1px solid #ccc;
-  border-radius: 6px;
+  border-radius: 8px;
+  background: #fff;
 }
 
-button {
-  padding: 0.6rem 1.2rem;
+.small-button-group {
+  width: 100%;
+  max-width: 350px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 0.7rem;
+  margin-bottom: 1.2rem;
+}
+
+.small-button-group button {
+  flex: 1 1 0;
+  padding: 0.7rem 0;
   font-size: 1rem;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
+  background-color: #e0e4ea;
+  color: #444;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+  transition: background 0.2s;
+  touch-action: manipulation;
+  outline: none;
+}
+
+.small-button-group button:hover,
+.small-button-group button:focus {
+  background-color: #cfd4db;
+}
+
+.button-group {
+  width: 100%;
+  max-width: 350px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2rem;
+  margin-bottom: 2rem;
+}
+
+.button-group button {
+  width: 100%;
+  padding: 1.3rem 0;
+  font-size: 1.3rem;
+  border: none;
+  border-radius: 8px;
   background-color: #007BFF;
   color: white;
   cursor: pointer;
-  margin-right: 0.5rem;
-  margin-top: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  transition: background 0.2s;
+  touch-action: manipulation;
+  outline: none;
 }
 
-button:hover {
+.button-group button:hover,
+.button-group button:focus {
   background-color: #0056b3;
 }
 
@@ -47,4 +111,21 @@ button:hover {
   margin-top: 1.5rem;
   font-style: italic;
   color: #555;
+  text-align: center;
+  font-size: 1.1rem;
+}
+
+input {
+  touch-action: manipulation;
+}
+
+@media (min-width: 600px) {
+  #clientIdInput {
+    max-width: 300px;
+    font-size: 1.1rem;
+  }
+  .button-group,
+  .small-button-group {
+    max-width: 400px;
+  }
 }
