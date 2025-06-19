@@ -1,6 +1,7 @@
 package er.codes.web
 
 import er.codes.web.service.BuzzerService
+import er.codes.web.service.QueueSingleton
 import io.ktor.server.application.*
 import io.ktor.server.plugins.*
 import io.ktor.server.routing.*
@@ -36,10 +37,10 @@ fun Application.configureSockets(prometheusRegistry: PrometheusMeterRegistry) {
                 incoming.consumeEach { frame ->
                     if (frame is Frame.Text) {
                         val message = frame.readText()
-                        val parsed = buzzerService.parseMessage(message)
-                        val readableTimeStamp = parsed?.toStringTimeStamp()
-
-                        log.info("Received timestamp from clientId=${parsed?.clientId}: $message (timestamp: $readableTimeStamp)")
+                        val parsed = buzzerService.parseMessage(message)?.also {
+                            QueueSingleton.addToQueue(it)
+                        }
+                        log.info("Received timestamp from clientId=${parsed?.clientId}: $message (timestamp: ${parsed?.timestampNs})")
                     }
                 }
             } catch (e: Exception) {

@@ -5,7 +5,6 @@ import kotlinx.serialization.json.Json
 import org.slf4j.LoggerFactory
 
 class BuzzerService {
-
     private val log = LoggerFactory.getLogger(BuzzerService::class.java)
 
     fun parseMessage(message: String): TimestampJson? =
