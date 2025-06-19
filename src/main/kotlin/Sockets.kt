@@ -1,18 +1,18 @@
 package er.codes.web
 
+import er.codes.web.service.BuzzerService
 import io.ktor.server.application.*
 import io.ktor.server.plugins.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import io.ktor.websocket.*
+import io.micrometer.core.instrument.Gauge
+import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
 import kotlinx.coroutines.channels.consumeEach
-import kotlinx.serialization.json.Json.Default.parseToJsonElement
-import kotlinx.serialization.json.jsonObject
-import kotlinx.serialization.json.jsonPrimitive
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.time.Duration.Companion.seconds
 
-fun Application.configureSockets() {
+fun Application.configureSockets(prometheusRegistry: PrometheusMeterRegistry) {
     install(WebSockets) {
         pingPeriod = 15.seconds
         timeout = 15.seconds
@@ -20,33 +20,33 @@ fun Application.configureSockets() {
         masking = false
     }
     val activeConnections = AtomicInteger(0)
+    val buzzerService = BuzzerService()
+    Gauge.builder("active_websocket_connections") { activeConnections.get() }
+        .description("Number of active WebSocket connections")
+        .register(prometheusRegistry)
 
     routing {
         webSocket("/timestamps") {
             val clientIp = call.request.origin.remoteHost
             val connectionId = activeConnections.incrementAndGet()
 
-            println("Client connected: IP=$clientIp, ConnectionId=$connectionId, Active connections=${activeConnections.get()}")
+            log.info("Client connected: IP=$clientIp, ConnectionId=$connectionId, Active connections=${activeConnections.get()}")
 
             try {
                 incoming.consumeEach { frame ->
                     if (frame is Frame.Text) {
                         val message = frame.readText()
-                        val clientId = try {
-                            val json = parseToJsonElement(message).jsonObject
-                            json["clientId"]?.jsonPrimitive?.content ?: "unknown"
-                        } catch (e: Exception) {
-                            "unknown"
-                        }
+                        val parsed = buzzerService.parseMessage(message)
+                        val readableTimeStamp = parsed?.toStringTimeStamp()
 
-                        println("Received timestamp from clientId=$clientId: $message ns")
+                        log.info("Received timestamp from clientId=${parsed?.clientId}: $message (timestamp: $readableTimeStamp)")
                     }
                 }
             } catch (e: Exception) {
-                println("WebSocket error (ConnectionId=$connectionId): ${e.localizedMessage}")
+                log.error("WebSocket error (ConnectionId=$connectionId): ${e.localizedMessage}")
             } finally {
                 val currentActive = activeConnections.decrementAndGet()
-                println("Client disconnected: IP=$clientIp, ConnectionId=$connectionId, Active connections=$currentActive")
+                log.info("Client disconnected: IP=$clientIp, ConnectionId=$connectionId, Active connections=$currentActive")
             }
         }
     }

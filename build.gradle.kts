@@ -1,7 +1,8 @@
 plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.ktor)
-    id("com.diffplug.spotless") version "7.0.3"
+    alias(libs.plugins.spotless)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 group = "er.codes.web"
@@ -16,14 +17,31 @@ repositories {
 }
 
 dependencies {
-    implementation(libs.ktor.server.core)
-    implementation(libs.ktor.server.metrics.micrometer)
-    implementation(libs.micrometer.registry.prometheus)
-    implementation(libs.ktor.server.websockets)
-    implementation(libs.ktor.server.netty)
-    implementation(libs.logback.classic)
+    implementation(libs.exposed.core)
+    implementation(libs.exposed.jdbc)
     implementation(libs.ktor.server.config.yaml)
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
+    implementation(libs.ktor.server.core)
+    implementation(libs.ktor.server.cors)
+    implementation(libs.ktor.server.metrics.micrometer)
+    implementation(libs.ktor.server.netty)
+    implementation(libs.ktor.server.websockets)
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.logback.classic)
+    implementation(libs.micrometer.registry.prometheus)
     testImplementation(libs.ktor.server.test.host)
     testImplementation(libs.kotlin.test.junit)
+}
+
+jib {
+    from {
+        image = "gcr.io/distroless/java21-debian12"
+    }
+    to {
+        image = "localhost:5000/web-buzzer"
+    }
+    container {
+        mainClass = "er.codes.web.ApplicationKt"
+        ports = listOf("8080")
+    }
+    setAllowInsecureRegistries(true)
 }
