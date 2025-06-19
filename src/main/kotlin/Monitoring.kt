@@ -9,7 +9,6 @@ import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
 fun Application.configureMonitoring(prometheusRegistry: PrometheusMeterRegistry) {
     install(MicrometerMetrics) {
         registry = prometheusRegistry
-        // ...
     }
     routing {
         get("/metrics-micrometer") {

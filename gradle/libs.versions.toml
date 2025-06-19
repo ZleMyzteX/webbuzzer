@@ -1,28 +1,28 @@
 [versions]
-kotlin-version = "2.1.21"
-ktor-version = "3.2.0"
-kotlinx-serialization = "1.8.1"
-logback-version = "1.5.18"
-prometheus-version = "1.15.1"
+kotlin = "2.1.21"
+ktor = "3.2.0"
+logback = "1.5.18"
+prometheus = "1.15.1"
 exposed = "1.0.0-beta-2"
 
 [libraries]
-ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor-version" }
-ktor-server-metrics-micrometer = { module = "io.ktor:ktor-server-metrics-micrometer", version.ref = "ktor-version" }
-micrometer-registry-prometheus = { module = "io.micrometer:micrometer-registry-prometheus", version.ref = "prometheus-version" }
-ktor-server-websockets = { module = "io.ktor:ktor-server-websockets", version.ref = "ktor-version" }
-ktor-server-netty = { module = "io.ktor:ktor-server-netty", version.ref = "ktor-version" }
-logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback-version" }
-ktor-server-config-yaml = { module = "io.ktor:ktor-server-config-yaml", version.ref = "ktor-version" }
-ktor-server-test-host = { module = "io.ktor:ktor-server-test-host", version.ref = "ktor-version" }
-ktor-server-cors = { module = "io.ktor:ktor-server-cors", version.ref = "ktor-version" }
-kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin-version" }
+kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
+ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor" }
+ktor-server-netty = { module = "io.ktor:ktor-server-netty", version.ref = "ktor" }
+ktor-server-websockets = { module = "io.ktor:ktor-server-websockets", version.ref = "ktor" }
+ktor-server-metrics-micrometer = { module = "io.ktor:ktor-server-metrics-micrometer", version.ref = "ktor" }
+ktor-server-config-yaml = { module = "io.ktor:ktor-server-config-yaml", version.ref = "ktor" }
+ktor-server-test-host = { module = "io.ktor:ktor-server-test-host", version.ref = "ktor" }
+ktor-server-cors = { module = "io.ktor:ktor-server-cors", version.ref = "ktor" }
+ktor-server-content-negotiation = { module = "io.ktor:ktor-server-content-negotiation", version.ref = "ktor" }
+ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
+micrometer-registry-prometheus = { module = "io.micrometer:micrometer-registry-prometheus", version.ref = "prometheus" }
+logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 exposed-core = { module = "org.jetbrains.exposed:exposed-core", version.ref = "exposed" }
 exposed-jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "exposed" }
-kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 
 [plugins]
-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-version" }
-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin-version"}
-ktor = { id = "io.ktor.plugin", version.ref = "ktor-version" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+ktor = { id = "io.ktor.plugin", version.ref = "ktor" }
 spotless = { id = "com.diffplug.spotless", version = "7.0.3" }
