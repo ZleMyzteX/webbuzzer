@@ -2,8 +2,9 @@ package er.codes.web
 
 import io.ktor.server.application.*
 import io.ktor.server.netty.EngineMain.main
-import io.micrometer.prometheus.PrometheusConfig
-import io.micrometer.prometheus.PrometheusMeterRegistry
+import io.micrometer.prometheusmetrics.PrometheusConfig
+import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
+
 
 fun main(args: Array<String>) {
     main(args)

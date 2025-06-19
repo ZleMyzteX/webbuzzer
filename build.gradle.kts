@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.ktor)
     alias(libs.plugins.spotless)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 group = "er.codes.web"
